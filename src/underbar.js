@@ -39,7 +39,7 @@
   // last element.
   _.last = function(array, n) {
     if (n === undefined) {
-      return array[array.length - 1] 
+      return array[array.length - 1]; 
     }
     if (n >= array.length){
       return array;
@@ -56,6 +56,16 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    // if array
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        iterator(collection[i], i, collection);
+      }
+    } else {
+        for (var key in collection) {
+          iterator(collection[key], key, collection);
+        }
+      }
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -77,6 +87,13 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    var result = [];
+    _.each(collection, function(elem){
+      if (test(elem)) {
+        result.push(elem);
+      }
+    });
+    return result;
   };
 
   // Return all elements of an array that don't pass a truth test.
