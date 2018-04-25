@@ -108,6 +108,33 @@
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
+    var result = [];
+    var sortedTest = [];
+    var index = [];
+    var otherArr = [];
+    
+    if (isSorted) {
+      _.each(array, function(elem){
+        sortedTest.push(iterator(elem));
+      });
+      _.each(sortedTest, function(elem, i){
+        //
+        if (_.indexOf(otherArr, elem) === -1) {
+          index.push(i);
+          otherArr.push(elem);
+        }
+      });
+      _.each(index, function(elem){
+        result.push(array[elem]);
+      });
+    } else {
+      _.each(array, function(elem){
+        if (_.indexOf(result, elem) === -1) {
+          result.push(elem);
+        }
+      });
+    }
+    return result;
   };
 
 
@@ -117,8 +144,7 @@
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     var resultArr = [];
-    _.each(collection, function(element){
-      debugger;  
+    _.each(collection, function(element){  
       resultArr.push(iterator(element));
     });
     return resultArr;
@@ -303,6 +329,16 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var result = {};
+
+    return function () {
+      var args = JSON.stringify(arguments);
+
+      if(result[args] === undefined) {
+        result[args] = func.apply(this, arguments);
+      }
+      return result[args];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -312,6 +348,12 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var args = Array.prototype.slice.call(arguments, 2);
+  
+    return setTimeout(function(){
+      return func.apply(this, args);
+      
+    }, wait);
   };
 
 
@@ -326,6 +368,18 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var arr = array.slice();
+    //iterate through the array
+    //each element needs to be pushed with a random index
+    //use a Math.random
+    
+    for (var i = arr.length - 1; i >= 0; i--) {
+      var random = Math.floor(Math.random() * -(i - arr.length));
+      var temp = arr[i];
+      arr[i] = arr[random];
+      arr[random] = temp;
+    }
+    return arr;
   };
 
 
